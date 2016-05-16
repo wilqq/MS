@@ -134,9 +134,38 @@ czy_wieksza_wydajnosc <- function(x1, x2)
   wynik <- u/sqrt(m)
 }
 tmp <- czy_wieksza_wydajnosc(wydajnosc1, wydajnosc2)
-install.packages(nortest)
-wydajnosc1_kolm <- lillie.test(wydajnosc1)
-wydajnosc2_kolm <- lillie.test(wydajnosc2)
+
+lillieforsBiceps <- function (x, pvalue2) 
+{
+  DNAME <- deparse(substitute(x))
+  x <- sort(x[complete.cases(x)])
+  n <- length(x)
+  if (n < 5) 
+    stop("Wielkosc probki musi byc wieksza od 4")
+  p <- pnorm((x - mean(x))/sd(x))
+  Dplus <- max(seq(1:n)/n - p)
+  Dminus <- max(p - (seq(1:n) - 1)/n)
+  K <- max(Dplus, Dminus)
+  if (n <= 100) {
+    Kd <- K
+    nd <- n
+  }
+  else {
+    Kd <- K * ((n/100)^0.49)
+    nd <- 100
+  }
+  pvalue <- pvalue2
+  RVAL <- list(statistic = c(D = K), p.value = pvalue, method = "Test Kolmogorova-Lillieforsa", 
+               data.name = DNAME)
+  class(RVAL) <- "htest"
+  return(RVAL)
+}
+
+lillieforsBiceps(wydajnosc1,0.05)
+lillieforsBiceps(wydajnosc2,0.95)
+wydajnosc1_kolm <- lillieforsBiceps(wydajnosc1,0.95)
+wydajnosc2_kolm <- lillieforsBiceps(wydajnosc2,0.95)
+
 odchylenie_std_wydajnosci <- function(x)
 {
   u <- length(x) * sd(x)*sd(x)
