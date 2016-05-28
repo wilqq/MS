@@ -127,13 +127,33 @@ test_zad_3 <- function(dane, m0)
   a <- 0.05
   T1 <- (mean(dane) - m0) /  sd(dane) * sqrt(length(dane) - 1)
   t <- qt(1 - a/2, length(dane))  
-  if (T1 < t && T1 > -1) {
-    print("Brak podstaw do odrzucenia hipotezy H0")
+  if (T1 < t && T1 > -t) {
+    print("Brak podstaw do odrzucenia hipotezy dotyczącej średniej")
   } else {
-    print("Są podstawy do odrzucenia hipotezy H0")
+    print("Są podstawy do odrzucenia hipotezy  dotyczącej średniej")
   }
 }
 
+test_zad_3(wydajnosc1, 22)
+
+#Zad. 4 Skrypt str 119
+# PYTANIE, czy to można liczyć dla wariancji?
+test_zad_4 <- function(dane, odchylenie_std)
+{
+  wariancja <- odchylenie_std ^ 2
+  a <- 0.05
+  
+  X1_kw <- length(dane) * sd(dane) ^ 2 / wariancja
+  chi_1 <- qchisq(a/2, length(dane) - 1)
+  chi_2 <- qchisq(1 - a/2, length(dane) - 1)
+  if (X1_kw < chi_2 && X1_kw > chi_1) {
+    print("Brak podstaw do odrzucenia hipotezy dotyczącej odchylenia standardowego")
+  } else {
+    print("Są podstawy do odrzucenia hipotezy dotyczącej odchylenia standardowego")
+  }
+}
+
+test_zad_4(wydajnosc2, 7)
 
 install.packages("nortest")
 library("nortest")
