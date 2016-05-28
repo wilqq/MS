@@ -85,7 +85,7 @@ wydajnosc2.asymetria_szczegolowy <- asymetria(wydajnosc2_szereg_szczegolowy)
 wydajnosc1.asymetria_rozdzielczy <- asymetria(wydajnosc1_szereg_rozdzielczy)
 wydajnosc2.asymetria_rozdzielczy <- asymetria(wydajnosc2_szereg_rozdzielczy)
 
-#odchylenie �wiartkowe
+#odchylenie ćwiartkowe
 odch_cw <- function(x)
 {
   (quantile(x,.75) - quantile(x,.25))/2
@@ -106,7 +106,7 @@ wydajnosc2.odchylenie_przecietne_szczegolowy <- odch_przecietne(wydajnosc2_szere
 wydajnosc1.odchylenie_przecietne_rozdzielczy <- odch_przecietne(wydajnosc1_szereg_rozdzielczy)
 wydajnosc2.odchylenie_przecietne_rozdzielczy <- odch_przecietne(wydajnosc2_szereg_rozdzielczy)
 
-#pozycyjny wsp�czynnik zmienno�ci
+#pozycyjny współczynnik zmienności
 poz_wspl_zmien <- function(x)
 {
   odch_cw(x) / median(x)
@@ -120,6 +120,21 @@ wydajnosc2.pozycyjny_wspolczynnik_zmiennosci_rozdzielczy <- poz_wspl_zmien(wydaj
 hist(wydajnosc1)
 hist(wydajnosc2)
 
+#Zad. 3 Skrypt str 117
+# PYTANIE czy w obliczaniu T1 ma być pierwiastek n czy n - 1
+test_zad_3 <- function(dane, m0)
+{
+  a <- 0.05
+  T1 <- (mean(dane) - m0) /  sd(dane) * sqrt(length(dane) - 1)
+  t <- qt(1 - a/2, length(dane))  
+  if (T1 < t && T1 > -1) {
+    print("Brak podstaw do odrzucenia hipotezy H0")
+  } else {
+    print("Są podstawy do odrzucenia hipotezy H0")
+  }
+}
+
+
 install.packages("nortest")
 library("nortest")
 
@@ -132,12 +147,11 @@ czy_wieksza_wydajnosc <- function(x1, x2)
 {
   u <- mean(x1) - mean(x2)
   m <- (sd(x1)*sd(x1)/length(x1)) +  (sd(x2)*sd(x2)/length(x2))
-  m <- (sd(x1)*sd(x1)/length(x1)) +  (sd(x2)*sd(x2)/length(x2))
   wynik <- u/sqrt(m)
 }
 tmp <- czy_wieksza_wydajnosc(wydajnosc1, wydajnosc2)
 
-lillieforsBiceps <- function (x) 
+lilliefors <- function (x) 
 {
     DNAME <- deparse(substitute(x))
     x <- sort(x[complete.cases(x)])
@@ -186,10 +200,10 @@ lillieforsBiceps <- function (x)
     return(RVAL)
 }
 
-lillieforsBiceps(wydajnosc1)
-lillieforsBiceps(wydajnosc2)
-wydajnosc1_kolm <- lillieforsBiceps(wydajnosc1)
-wydajnosc2_kolm <- lillieforsBiceps(wydajnosc2)
+lilliefors(wydajnosc1)
+lilliefors(wydajnosc2)
+wydajnosc1_kolm <- lilliefors(wydajnosc1)
+wydajnosc2_kolm <- lilliefors(wydajnosc2)
 
 odchylenie_std_wydajnosci <- function(x)
 {
