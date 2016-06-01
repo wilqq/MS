@@ -64,7 +64,7 @@ wydajnosc2.moda_szczegolowy <- moda(wydajnosc2_szereg_szczegolowy)
 wydajnosc1.moda_rozdzielczy <- modaRoz(wydajnosc1_szereg_rozdzielczy)
 wydajnosc2.moda_rozdzielczy <- modaRoz(wydajnosc2_szereg_rozdzielczy)
 
-#kwantyl q1
+#kwantyl q1dn
 wydajnosc1.kwantyl_q1_szczegolowy <- quantile(wydajnosc1_szereg_szczegolowy,.25)
 wydajnosc2.kwantyl_q1_szczegolowy <- quantile(wydajnosc2_szereg_szczegolowy,.25)
 wydajnosc1.kwantyl_q1_rozdzielczy <- quantile(wydajnosc1_szereg_rozdzielczy$mids,.25)
@@ -274,57 +274,31 @@ tmp <- czy_wieksza_wydajnosc(wydajnosc1, wydajnosc2)
 
 lilliefors <- function (x) 
 {
-  DNAME <- deparse(substitute(x))
-  x <- sort(x[complete.cases(x)])
-  n <- length(x)
-  if (n < 5) 
-    stop("Przykladowa probka musi byc wieksza od 4")
-  p <- pnorm((x - mean(x))/sd(x))
-  Dplus <- max(seq(1:n)/n - p)
-  Dminus <- max(p - (seq(1:n) - 1)/n)
-  K <- max(Dplus, Dminus)
-  if (n <= 100) {
-    Kd <- K
-    nd <- n
+  srednia_x <- mean(x)
+  odchylenie_sd <- sd(x)
+  
+  f_gestosc <- function(x) (1/sqrt(2*3.14*odchylenie_sd))*exp(-1*((x-srednia_x)*(x-srednia_x))/2*odchylenie_sd*odchylenie_sd)
+
+  dystrybuanta_rn <- function(f_gestosc) (integrate(f_gestosc, -Inf, max(x)))
+  
+  f_dystrybuanta_empiryczna <- function(x) (sum(x)/length(x))  
+
+  dn <- max(abs(f_dystrybuanta_empiryczna(x)-dystrybuanta_rn(f_gestosc)$value))
+  wartosc_krytyczna <- 0.886/sqrt(length(x))
+  if(dn>=wartosc_krytyczna){
+    if(dn<=1){
+      return("Hipoteza odrzucona - rozk³ad nie jest rozk³adem normalnym") #Odrzucamy hipoteze bo statystyka zawiera siê w zbiorze krytycznym
+    }
+    else return("Brak podstaw, by stwierdziæ, ¿e rozk³ad nie jest rozk³adem normalnym")
   }
-  else {
-    Kd <- K * ((n/100)^0.49)
-    nd <- 100
-  }
-  pvalue <- exp(-7.01256 * Kd^2 * (nd + 2.78019) + 2.99587 * 
-                  Kd * sqrt(nd + 2.78019) - 0.122119 + 0.974598/sqrt(nd) + 
-                  1.67997/nd)
-  if (pvalue > 0.05) {
-    KK <- (sqrt(n) - 0.01 + 0.85/sqrt(n)) * K
-    if (KK <= 0.302) {
-      pvalue <- 1
-    }
-    else if (KK <= 0.5) {
-      pvalue <- 2.76773 - 19.828315 * KK + 80.709644 * 
-        KK^2 - 138.55152 * KK^3 + 81.218052 * KK^4
-    }
-    else if (KK <= 0.9) {
-      pvalue <- -4.901232 + 40.662806 * KK - 97.490286 * 
-        KK^2 + 94.029866 * KK^3 - 32.355711 * KK^4
-    }
-    else if (KK <= 1.31) {
-      pvalue <- 6.198765 - 19.558097 * KK + 23.186922 * 
-        KK^2 - 12.234627 * KK^3 + 2.423045 * KK^4
-    }
-    else {
-      pvalue <- 0
-    }
-  }
-  RVAL <- list(statistic = c(D = K), p.value = pvalue, method = "Test Kolmogorova-Lillieforsa", 
-               data.name = DNAME)
-  class(RVAL) <- "htest"
-  return(RVAL)
+  else return("Brak podstaw, by stwierdziæ, ¿e rozk³ad nie jest rozk³adem normalnym")
+ 
 }
 
 lilliefors(wydajnosc1)
-lilliefors(wydajnosc2)
-wydajnosc1_kolm <- lilliefors(wydajnosc1)
-wydajnosc2_kolm <- lilliefors(wydajnosc2)
+#lilliefors(wydajnosc2)
+#wydajnosc1_kolm <- lilliefors(wydajnosc1)
+#wydajnosc2_kolm <- lilliefors(wydajnosc2)
 
 odchylenie_std_wydajnosci <- function(x)
 {
