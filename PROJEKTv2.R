@@ -14,7 +14,7 @@ wydajnosc2_szereg_szczegolowy <- sort(wydajnosc2)
 wydajnosc1tmp <- na.omit(wydajnosc1_szereg_szczegolowy)
 wydajnosc2tmp <- na.omit(wydajnosc2_szereg_szczegolowy)
 
-#histogramy rozkładów emiprycznych (rozkład emipryczny == szereg rozdzielczy)
+#histogramy rozkĹ‚adĂłw emiprycznych (rozkĹ‚ad emipryczny == szereg rozdzielczy)
 count1 <- sqrt(length(wydajnosc1_szereg_szczegolowy))
 count2 <- sqrt(length(wydajnosc2_szereg_szczegolowy))
 
@@ -222,23 +222,23 @@ wydajnosc1.odchylenie_przecietne_rozdzielczy <- odchyleniePrzecietneRoz(wydajnos
 wydajnosc2.odchylenie_przecietne_rozdzielczy <- odchyleniePrzecietneRoz(wydajnosc2_szereg_rozdzielczy)
 
 #Zad. 3 Skrypt str 117
-# PYTANIE czy w obliczaniu T1 ma być pierwiastek n czy n - 1
+# PYTANIE czy w obliczaniu T1 ma byÄ‡ pierwiastek n czy n - 1
 test_zad_3 <- function(dane, m0)
 {
   a <- 0.05
   T1 <- (mean(dane) - m0) /  sd(dane) * sqrt(length(dane) - 1)
   t <- qt(1 - a/2, length(dane))  
   if (T1 < t && T1 > -t) {
-    print("Brak podstaw do odrzucenia hipotezy dotyczącej średniej")
+    print("Brak podstaw do odrzucenia hipotezy dotyczÄ…cej Ĺ›redniej")
   } else {
-    print("Są podstawy do odrzucenia hipotezy  dotyczącej średniej")
+    print("SÄ… podstawy do odrzucenia hipotezy  dotyczÄ…cej Ĺ›redniej")
   }
 }
 
 test_zad_3(wydajnosc1, 22)
 
 #Zad. 4 Skrypt str 119
-# PYTANIE, czy to można liczyć dla wariancji?
+# PYTANIE, czy to moĹĽna liczyÄ‡ dla wariancji?
 test_zad_4 <- function(dane, odchylenie_std)
 {
   wariancja <- odchylenie_std ^ 2
@@ -248,9 +248,9 @@ test_zad_4 <- function(dane, odchylenie_std)
   chi_1 <- qchisq(a/2, length(dane) - 1)
   chi_2 <- qchisq(1 - a/2, length(dane) - 1)
   if (X1_kw < chi_2 && X1_kw > chi_1) {
-    print("Brak podstaw do odrzucenia hipotezy dotyczącej odchylenia standardowego")
+    print("Brak podstaw do odrzucenia hipotezy dotyczÄ…cej odchylenia standardowego")
   } else {
-    print("Są podstawy do odrzucenia hipotezy dotyczącej odchylenia standardowego")
+    print("SÄ… podstawy do odrzucenia hipotezy dotyczÄ…cej odchylenia standardowego")
   }
 }
 
@@ -287,11 +287,11 @@ lilliefors <- function (x)
   wartosc_krytyczna <- 0.886/sqrt(length(x))
   if(dn>=wartosc_krytyczna){
     if(dn<=1){
-      return("Hipoteza odrzucona - rozk�ad nie jest rozk�adem normalnym") #Odrzucamy hipoteze bo statystyka zawiera si� w zbiorze krytycznym
+      return("Hipoteza odrzucona - rozkład nie jest rozkładem normalnym") #Odrzucamy hipoteze bo statystyka zawiera się w zbiorze krytycznym
     }
-    else return("Brak podstaw, by stwierdzi�, �e rozk�ad nie jest rozk�adem normalnym")
+    else return("Brak podstaw, by stwierdzić, że rozkład nie jest rozkładem normalnym")
   }
-  else return("Brak podstaw, by stwierdzi�, �e rozk�ad nie jest rozk�adem normalnym")
+  else return("Brak podstaw, by stwierdzić, że rozkład nie jest rozkładem normalnym")
  
 }
 
@@ -306,3 +306,25 @@ odchylenie_std_wydajnosci <- function(x)
   l <- u/54.437
   r <- u/21.336
 }
+
+
+test_zad_5 <- function(wydajnosc1, wydajnosc2)
+{
+  WartoscStatystykiTestowej <- (mean(wydajnosc1) - mean(wydajnosc2))
+  WartoscStatystykiTestowej <- WartoscStatystykiTestowej/(sqrt(((odchylenie_std_wydajnosci(wydajnosc1)*odchylenie_std_wydajnosci(wydajnosc1))/length(wydajnosc1))
+                                                               +((odchylenie_std_wydajnosci(wydajnosc2)*odchylenie_std_wydajnosci(wydajnosc2))/length(wydajnosc2))))
+  
+  prawostronnyObszarKrytyczny <- 1.96
+  
+  if (WartoscStatystykiTestowej > prawostronnyObszarKrytyczny)
+  {
+    print ("Można przyjąć, iż wartości wydajności pracy na starej hali są większe")
+  }
+  else
+  {
+    print ("Nie można powiedzieć, aby wartości wydajności pracy na starej hali były większe")
+  }
+  
+}
+
+test_zad_5(wydajnosc1, wydajnosc2)
