@@ -277,7 +277,7 @@ lilliefors <- function (x)
   srednia_x <- mean(x)
   odchylenie_sd <- sd(x)
   
-  f_gestosc <- function(x) (1/sqrt(2*3.14*odchylenie_sd))*exp(-1*((x-srednia_x)*(x-srednia_x))/2*odchylenie_sd*odchylenie_sd)
+  f_gestosc <- function(x) ((1/sqrt(2*3.14*odchylenie_sd))*exp(-1*((x-srednia_x)*(x-srednia_x))/(2*odchylenie_sd*odchylenie_sd)))
 
   dystrybuanta_rn <- function(f_gestosc) (integrate(f_gestosc, -Inf, max(x)))
   
