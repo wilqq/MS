@@ -275,24 +275,29 @@ tmp <- czy_wieksza_wydajnosc(wydajnosc1, wydajnosc2)
 
 lilliefors <- function (x) 
 {
+  #f_gestosc <- function(x) ((1/(sqrt(2*3.14)*odchylenie_sd))*exp(-1*((x-srednia_x)*(x-srednia_x))/(2*odchylenie_sd*odchylenie_sd)))
+  
+  #dystrybuanta_rn <- function(f_gestosc) (integrate(f_gestosc, -Inf, max(x)))
+  #dystrybuanta_rn(f_gestosc)
+  #f_dystrybuanta_empiryczna <- function(x) (sum(x)/length(x))  
+  
+  #dn <- max(abs(f_dystrybuanta_empiryczna(x)-dystrybuanta_rn(f_gestosc)$value))
+  #wartosc_krytyczna <- 0.886/sqrt(length(x))
+
   srednia_x <- mean(x)
   odchylenie_sd <- sd(x)
-  
-  f_gestosc <- function(x) ((1/(sqrt(2*3.14)*odchylenie_sd))*exp(-1*((x-srednia_x)*(x-srednia_x))/(2*odchylenie_sd*odchylenie_sd)))
-  
-  dystrybuanta_rn <- function(f_gestosc) (integrate(f_gestosc, -Inf, max(x)))
-  
-  f_dystrybuanta_empiryczna <- function(x) (sum(x)/length(x))  
-  
-  dn <- max(abs(f_dystrybuanta_empiryczna(x)-dystrybuanta_rn(f_gestosc)$value))
+  temp <- ecdf(x)
+  dn <- max(abs(temp(x)-pnorm(x,srednia_x,odchylenie_sd)))
   wartosc_krytyczna <- 0.886/sqrt(length(x))
-  if(dn>=wartosc_krytyczna){
-    if(dn<=1){
-      return("Hipoteza odrzucona - rozkład nie jest rozkładem normalnym") #Odrzucamy hipoteze bo statystyka zawiera się w zbiorze krytycznym
+  
+  if(dn < wartosc_krytyczna)
+    {
+     return("Brak podstaw, by stwierdzić, że rozkład nie jest rozkładem normalnym")
     }
-    else return("Brak podstaw, by stwierdzić, że rozkład nie jest rozkładem normalnym")
-  }
-  else return("Brak podstaw, by stwierdzić, że rozkład nie jest rozkładem normalnym")
+    else 
+    {
+      return("Hipoteza odrzucona - rozkład nie jest rozkładem normalnym")
+    }
   
 }
 
