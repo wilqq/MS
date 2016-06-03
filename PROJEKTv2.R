@@ -18,8 +18,8 @@ wydajnosc2tmp <- na.omit(wydajnosc2_szereg_szczegolowy)
 count1 <- sqrt(length(wydajnosc1_szereg_szczegolowy))
 count2 <- sqrt(length(wydajnosc2_szereg_szczegolowy))
 
-breaks1 <- seq(min(wydajnosc1tmp), max(wydajnosc1tmp), length.out <- count1)
-breaks2 <- seq(min(wydajnosc2tmp), max(wydajnosc2tmp), length.out <- count2)
+breaks1 <- seq(min(wydajnosc1tmp), max(wydajnosc1tmp), length.out = count1)
+breaks2 <- seq(min(wydajnosc2tmp), max(wydajnosc2tmp), length.out = count2)
 
 wydajnosc1_szereg_rozdzielczy <- hist(wydajnosc1tmp, breaks1)
 wydajnosc2_szereg_rozdzielczy <- hist(wydajnosc2tmp, breaks2)
@@ -153,7 +153,8 @@ wydajnosc1.wspl_zmiennosci_rozdzielczy <- rozstepRoz(wydajnosc1_szereg_rozdzielc
 wydajnosc2.wspl_zmiennosci_rozdzielczy <- rozstepRoz(wydajnosc2_szereg_rozdzielczy)
 
 #miary koncentracji(kurtoza, skosnosc)
-# to tylko daj raz zeby zainstalowalo install.packages("e1071")
+# to tylko daj raz zeby zainstalowalo 
+#install.packages("e1071")
 library(e1071)
 #kurtoza
 kurtozaRoz <- function (x) {
@@ -277,12 +278,12 @@ lilliefors <- function (x)
   srednia_x <- mean(x)
   odchylenie_sd <- sd(x)
   
-  f_gestosc <- function(x) ((1/sqrt(2*3.14*odchylenie_sd))*exp(-1*((x-srednia_x)*(x-srednia_x))/(2*odchylenie_sd*odchylenie_sd)))
-
+  f_gestosc <- function(x) ((1/(sqrt(2*3.14)*odchylenie_sd))*exp(-1*((x-srednia_x)*(x-srednia_x))/(2*odchylenie_sd*odchylenie_sd)))
+  
   dystrybuanta_rn <- function(f_gestosc) (integrate(f_gestosc, -Inf, max(x)))
   
   f_dystrybuanta_empiryczna <- function(x) (sum(x)/length(x))  
-
+  
   dn <- max(abs(f_dystrybuanta_empiryczna(x)-dystrybuanta_rn(f_gestosc)$value))
   wartosc_krytyczna <- 0.886/sqrt(length(x))
   if(dn>=wartosc_krytyczna){
@@ -292,7 +293,7 @@ lilliefors <- function (x)
     else return("Brak podstaw, by stwierdzić, że rozkład nie jest rozkładem normalnym")
   }
   else return("Brak podstaw, by stwierdzić, że rozkład nie jest rozkładem normalnym")
- 
+  
 }
 
 lilliefors(wydajnosc1)
@@ -309,21 +310,21 @@ odchylenie_std_wydajnosci <- function(x)
 
 test_zad_5 <- function(wydajnosc1, wydajnosc2)
 {
-WartoscStatystykiTestowej <- (mean(wydajnosc1) - mean(wydajnosc2))
-WartoscStatystykiTestowej <- WartoscStatystykiTestowej/(sqrt(((odchylenie_std_wydajnosci(wydajnosc1)*odchylenie_std_wydajnosci(wydajnosc1))/length(wydajnosc1))
-+((odchylenie_std_wydajnosci(wydajnosc2)*odchylenie_std_wydajnosci(wydajnosc2))/length(wydajnosc2))))
-
-prawostronnyObszarKrytyczny <- 1.96
-
-if (wartoscStatystykiTestowej > prawostronnyObszarKrytyczny)
-{
-	print ("Można przyjąć, iż wartości wydajności pracy na starej hali są większe")
-}
-else
-{
-	print ("Nie można powiedzieć, aby wartości wydajności pracy na starej hali były większe")
-}
-
+  WartoscStatystykiTestowej <- (mean(wydajnosc1) - mean(wydajnosc2))
+  WartoscStatystykiTestowej <- WartoscStatystykiTestowej/(sqrt(((odchylenie_std_wydajnosci(wydajnosc1)*odchylenie_std_wydajnosci(wydajnosc1))/length(wydajnosc1))
+                                                               +((odchylenie_std_wydajnosci(wydajnosc2)*odchylenie_std_wydajnosci(wydajnosc2))/length(wydajnosc2))))
+  
+  prawostronnyObszarKrytyczny <- 1.96
+  
+  if (WartoscStatystykiTestowej > prawostronnyObszarKrytyczny)
+  {
+    print ("Można przyjąć, iż wartości wydajności pracy na starej hali są większe")
+  }
+  else
+  {
+    print ("Nie można powiedzieć, aby wartości wydajności pracy na starej hali były większe")
+  }
+  
 }
 
 test_zad_5(wydajnosc1, wydajnosc2)
