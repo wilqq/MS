@@ -321,6 +321,9 @@ test_zad_5 <- function(wydajnosc1, wydajnosc2)
   
   prawostronnyObszarKrytyczny <- 1.96
   
+  print ("Wartosc statystyki testowej wynosi: ")
+  print (WartoscStatystykiTestowej)
+  
   if (WartoscStatystykiTestowej > prawostronnyObszarKrytyczny)
   {
     print ("Można przyjąć, iż wartości wydajności pracy na starej hali są większe")
