@@ -279,7 +279,7 @@ lilliefors <- function (x)
   odchylenie_sd <- sd(x)
   xsort = sort(x)
   temp = (1:length(x))/length(x)
-  dn <- max(abs(temp-pnorm(x,srednia_x,odchylenie_sd)))
+  dn <- max(abs(temp-pnorm(xsort,srednia_x,odchylenie_sd)))
   wartosc_krytyczna <- 0.886/sqrt(length(x))
   
   if(dn < wartosc_krytyczna)
@@ -308,6 +308,7 @@ lilliefors <- function (x)
         print(wartosc_krytyczna)
         return("Hipoteza odrzucona - rozkład nie jest rozkładem normalnym")    
       }
+      
     }
 }
 
