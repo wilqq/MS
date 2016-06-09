@@ -271,25 +271,25 @@ wydajnosc2_kolm <- lilliefors(wydajnosc2)
 
 
 #Zad. 3 Skrypt str 117
-# PYTANIE czy w obliczaniu T1 ma byÄ‡ pierwiastek n czy n - 1
 test_zad_3 <- function(dane, m0)
 {
   a <- 0.05
   T1 <- (mean(dane) - m0) /  sd(dane) * sqrt(length(dane) - 1)
   t <- qt(1 - a/2, length(dane) - 1) 
+  print ("Wartosc statystyki testowej wynosi: ")
   print(T1)
+  print ("Kwantyl rozkladu t-studenta ")
   print(t)
   if (T1 < t && T1 > -t) {
-    print("Brak podstaw do odrzucenia hipotezy dotyczÄ…cej Ĺ›redniej")
+    print("Brak podstaw do odrzucenia hipotezy dotyczacej średniej")
   } else {
-    print("SÄ… podstawy do odrzucenia hipotezy  dotyczÄ…cej Ĺ›redniej")
+    print("Są podstawy do odrzucenia hipotezy  dotyczacej średniej")
   }
 }
 
 test_zad_3(wydajnosc1, 22)
 
 #Zad. 4 Skrypt str 119
-# PYTANIE, czy to moĹĽna liczyÄ‡ dla wariancji?
 test_zad_4 <- function(dane, odchylenie_std)
 {
   wariancja <- odchylenie_std ^ 2
@@ -298,13 +298,16 @@ test_zad_4 <- function(dane, odchylenie_std)
   X1_kw <- length(dane) * sd(dane) ^ 2 / wariancja
   chi_1 <- qchisq(a/2, length(dane) - 1)
   chi_2 <- qchisq(1 - a/2, length(dane) - 1)
+  print ("Wartosc statystyki testowej wynosi: ")
   print(X1_kw)
+  print ("Kwantyl rozkladu chi-kwadrat a/2 ")
   print(chi_1)
+  print ("Kwantyl rozkladu chi-kwadrat 1 - a/2 ")
   print(chi_2)
   if (X1_kw < chi_2 && X1_kw > chi_1) {
-    print("Brak podstaw do odrzucenia hipotezy dotyczÄ…cej odchylenia standardowego")
+    print("Brak podstaw do odrzucenia hipotezy dotyczacej odchylenia standardowego")
   } else {
-    print("SÄ… podstawy do odrzucenia hipotezy dotyczÄ…cej odchylenia standardowego")
+    print("Sa podstawy do odrzucenia hipotezy dotyczacej odchylenia standardowego")
   }
 }
 
