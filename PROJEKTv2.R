@@ -8,6 +8,8 @@ wydajnosc2 <- c(21.41, 14.63, 16.18, 23.69, 19.16, 29.05, 25.22, 23.11, 24.85,
                 14.6, 35.78, 25.11, 20.86, 27.93, 12.02, 27.17, 21.62, 16.43, 
                 26.5, 23.68, 16.57, 8.16, 11.24, 25.95, 26.13, 17.96, 20.28, 29.58)
 
+
+
 wydajnosc1_szereg_szczegolowy <- sort(wydajnosc1)
 wydajnosc2_szereg_szczegolowy <- sort(wydajnosc2)
 
@@ -147,10 +149,10 @@ rozstepRoz <- function(x) {
   return(max(x$mids)-min(x$mids))
 }
 
-wydajnosc1.wspl_zmiennosci_szczegolowy <- rozstep(wydajnosc1_szereg_szczegolowy)
-wydajnosc2.wspl_zmiennosci_szczegolowy <- rozstep(wydajnosc2_szereg_szczegolowy)
-wydajnosc1.wspl_zmiennosci_rozdzielczy <- rozstepRoz(wydajnosc1_szereg_rozdzielczy)
-wydajnosc2.wspl_zmiennosci_rozdzielczy <- rozstepRoz(wydajnosc2_szereg_rozdzielczy)
+wydajnosc1.rozstep_szczegolowy <- rozstep(wydajnosc1_szereg_szczegolowy)
+wydajnosc2.rozstep_szczegolowy <- rozstep(wydajnosc2_szereg_szczegolowy)
+wydajnosc1.rozstep_rozdzielczy <- rozstepRoz(wydajnosc1_szereg_rozdzielczy)
+wydajnosc2.rozstep_rozdzielczy <- rozstepRoz(wydajnosc2_szereg_rozdzielczy)
 
 #miary koncentracji(kurtoza, skosnosc)
 # to tylko daj raz zeby zainstalowalo 
@@ -175,10 +177,10 @@ EkscesRoz <- function(x) {
   return(kurtozaRoz(x)-3)
 }
 
-wydajnosc1.kurtoza_szczegolowy <- Eksces(wydajnosc1_szereg_szczegolowy)
-wydajnosc2.kurtoza_szczegolowy <- Eksces(wydajnosc2_szereg_szczegolowy)
-wydajnosc1.kurtoza_rozdzielczy <- EkscesRoz(wydajnosc1_szereg_rozdzielczy)
-wydajnosc2.kurtoza_rozdzielczy <- EkscesRoz(wydajnosc2_szereg_rozdzielczy)
+wydajnosc1.eksces_szczegolowy <- Eksces(wydajnosc1_szereg_szczegolowy)
+wydajnosc2.eksces_szczegolowy <- Eksces(wydajnosc2_szereg_szczegolowy)
+wydajnosc1.eksces_rozdzielczy <- EkscesRoz(wydajnosc1_szereg_rozdzielczy)
+wydajnosc2.eksces_rozdzielczy <- EkscesRoz(wydajnosc2_szereg_rozdzielczy)
 
 #skosnosc
 skosnoscRoz <- function (x) {
@@ -222,13 +224,61 @@ wydajnosc2.odchylenie_przecietne_szczegolowy <- odchyleniePrzecietne(wydajnosc2_
 wydajnosc1.odchylenie_przecietne_rozdzielczy <- odchyleniePrzecietneRoz(wydajnosc1_szereg_rozdzielczy)
 wydajnosc2.odchylenie_przecietne_rozdzielczy <- odchyleniePrzecietneRoz(wydajnosc2_szereg_rozdzielczy)
 
+#zad 2 test Kołmogorowa lilieforsa
+lilliefors <- function (x) 
+{
+  srednia_x <- mean(x)
+  odchylenie_sd <- sd(x)
+  xsort = sort(x)
+  temp = (1:length(x))/length(x)
+  dn <- max(abs(temp-pnorm(xsort,srednia_x,odchylenie_sd)))
+  wartosc_krytyczna <- 0.886/sqrt(length(x))
+  
+  if(dn < wartosc_krytyczna)
+  {
+    print("Wartosc statystyki testowej: ")
+    print(dn)
+    print("Wartosc krytyczna: ")
+    print(wartosc_krytyczna)
+    return("Brak podstaw, by stwierdzić, że rozkład nie jest rozkładem normalnym")
+  }
+  else
+  {
+    if(dn > 1)
+    {
+      print("Wartosc statystyki testowej: ")
+      print(dn)
+      print("Wartosc krytyczna: ")
+      print(wartosc_krytyczna)
+      return("Brak podstaw, by stwierdzić, że rozkład nie jest rozkładem normalnym")
+    }
+    else
+    {
+      print("Wartosc statystyki testowej: ")
+      print(dn)
+      print("Wartosc krytyczna: ")
+      print(wartosc_krytyczna)
+      return("Hipoteza odrzucona - rozkład nie jest rozkładem normalnym")    
+    }
+    
+  }
+}
+
+lilliefors(wydajnosc1)
+lilliefors(wydajnosc2)
+wydajnosc1_kolm <- lilliefors(wydajnosc1)
+wydajnosc2_kolm <- lilliefors(wydajnosc2)
+
+
 #Zad. 3 Skrypt str 117
 # PYTANIE czy w obliczaniu T1 ma byÄ‡ pierwiastek n czy n - 1
 test_zad_3 <- function(dane, m0)
 {
   a <- 0.05
   T1 <- (mean(dane) - m0) /  sd(dane) * sqrt(length(dane) - 1)
-  t <- qt(1 - a/2, length(dane))  
+  t <- qt(1 - a/2, length(dane) - 1) 
+  print(T1)
+  print(t)
   if (T1 < t && T1 > -t) {
     print("Brak podstaw do odrzucenia hipotezy dotyczÄ…cej Ĺ›redniej")
   } else {
@@ -248,6 +298,9 @@ test_zad_4 <- function(dane, odchylenie_std)
   X1_kw <- length(dane) * sd(dane) ^ 2 / wariancja
   chi_1 <- qchisq(a/2, length(dane) - 1)
   chi_2 <- qchisq(1 - a/2, length(dane) - 1)
+  print(X1_kw)
+  print(chi_1)
+  print(chi_2)
   if (X1_kw < chi_2 && X1_kw > chi_1) {
     print("Brak podstaw do odrzucenia hipotezy dotyczÄ…cej odchylenia standardowego")
   } else {
@@ -273,49 +326,6 @@ czy_wieksza_wydajnosc <- function(x1, x2)
 }
 tmp <- czy_wieksza_wydajnosc(wydajnosc1, wydajnosc2)
 
-lilliefors <- function (x) 
-{
-  srednia_x <- mean(x)
-  odchylenie_sd <- sd(x)
-  xsort = sort(x)
-  temp = (1:length(x))/length(x)
-  dn <- max(abs(temp-pnorm(xsort,srednia_x,odchylenie_sd)))
-  wartosc_krytyczna <- 0.886/sqrt(length(x))
-  
-  if(dn < wartosc_krytyczna)
-    {
-      print("Wartosc statystyki testowej: ")
-      print(dn)
-      print("Wartosc krytyczna: ")
-      print(wartosc_krytyczna)
-      return("Brak podstaw, by stwierdzić, że rozkład nie jest rozkładem normalnym")
-    }
-    else
-    {
-      if(dn > 1)
-      {
-        print("Wartosc statystyki testowej: ")
-        print(dn)
-        print("Wartosc krytyczna: ")
-        print(wartosc_krytyczna)
-        return("Brak podstaw, by stwierdzić, że rozkład nie jest rozkładem normalnym")
-      }
-      else
-      {
-        print("Wartosc statystyki testowej: ")
-        print(dn)
-        print("Wartosc krytyczna: ")
-        print(wartosc_krytyczna)
-        return("Hipoteza odrzucona - rozkład nie jest rozkładem normalnym")    
-      }
-      
-    }
-}
-
-lilliefors(wydajnosc1)
-#lilliefors(wydajnosc2)
-#wydajnosc1_kolm <- lilliefors(wydajnosc1)
-#wydajnosc2_kolm <- lilliefors(wydajnosc2)
 
 odchylenie_std_wydajnosci <- function(x)
 {
@@ -334,7 +344,6 @@ test_zad_5 <- function(wydajnosc1, wydajnosc2)
   
   print ("Wartosc statystyki testowej wynosi: ")
   print (WartoscStatystykiTestowej)
-  
   if (WartoscStatystykiTestowej > prawostronnyObszarKrytyczny)
   {
     print ("Można przyjąć, iż wartości wydajności pracy na starej hali są większe")
