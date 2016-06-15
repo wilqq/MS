@@ -339,14 +339,25 @@ odchylenie_std_wydajnosci <- function(x)
 
 test_zad_5 <- function(wydajnosc1, wydajnosc2)
 {
-  WartoscStatystykiTestowej <- (mean(wydajnosc1) - mean(wydajnosc2))
-  WartoscStatystykiTestowej <- WartoscStatystykiTestowej/(sqrt(((odchylenie_std_wydajnosci(wydajnosc1)*odchylenie_std_wydajnosci(wydajnosc1))/length(wydajnosc1))
-                                                               +((odchylenie_std_wydajnosci(wydajnosc2)*odchylenie_std_wydajnosci(wydajnosc2))/length(wydajnosc2))))
+  roznicaWariancji <- abs(var(wydajnosc1) - var(wydajnosc2))
+  roznicaSrednich <- abs(mean(wydajnosc1) - mean(wydajnosc2))
   
+  WartoscStatystykiTestowej <- (mean(wydajnosc1) - mean(wydajnosc2))
+  
+  if(roznicaSrednich <= roznicaWariancji)
+  {
+    WartoscStatystykiTestowej <- WartoscStatystykiTestowej/(sqrt(((odchylenie_std_wydajnosci(wydajnosc1)*odchylenie_std_wydajnosci(wydajnosc1))/length(wydajnosc1))
+                                +((odchylenie_std_wydajnosci(wydajnosc2)*odchylenie_std_wydajnosci(wydajnosc2))/length(wydajnosc2)))) 
+  }
+  else
+  {
+    WartoscStatystykiTestowej <- WartoscStatystykiTestowej/sqrt((length(wydajnosc1)*var(wydajnosc1)*var(wydajnosc1) + length(wydajnosc2)*var(wydajnosc2)*var(wydajnosc2))/(length(wydajnosc1)+length(wydajnosc2)-2)*((1/length(wydajnosc1))*1/length(wydajnosc2)))
+  }
   prawostronnyObszarKrytyczny <- 1.96
   
   print ("Wartosc statystyki testowej wynosi: ")
   print (WartoscStatystykiTestowej)
+  
   if (WartoscStatystykiTestowej > prawostronnyObszarKrytyczny)
   {
     print ("Można przyjąć, iż wartości wydajności pracy na starej hali są większe")
