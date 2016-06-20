@@ -162,6 +162,9 @@ library(e1071)
 kurtozaRoz <- function (x) {
   return(moment(x$mids, order=4, center=TRUE)/(odchylenieRoz(x)^4))
 }
+kurtoza <- function (x) {
+  moment(x, order=4, center=TRUE) / (sd(x)^ 4);
+}
 
 wydajnosc1.kurtoza_szczegolowy <- kurtosis(wydajnosc1_szereg_szczegolowy)
 wydajnosc2.kurtoza_szczegolowy <- kurtosis(wydajnosc2_szereg_szczegolowy)
@@ -170,7 +173,7 @@ wydajnosc2.kurtoza_rozdzielczy <- kurtozaRoz(wydajnosc2_szereg_rozdzielczy)
 
 #Eksces
 Eksces <- function(x) {
-  return(kurtosis(x)-3)
+  return(kurtoza(x)-3)
 }
 
 EkscesRoz <- function(x) {
@@ -210,19 +213,33 @@ wydajnosc2.pozycyjny_wspolczynnik_zmiennosci_szczegolowy <- wsplAsymetrii(wydajn
 wydajnosc1.pozycyjny_wspolczynnik_zmiennosci_rozdzielczy <- wsplAsymetriiRoz(wydajnosc1_szereg_rozdzielczy)
 wydajnosc2.pozycyjny_wspolczynnik_zmiennosci_rozdzielczy <- wsplAsymetriiRoz(wydajnosc2_szereg_rozdzielczy)
 
-# odchylenie przecietne
-odchyleniePrzecietne <- function(x) {
+# odchylenie przecietne od sredniej
+odchyleniePrzecietneSr <- function(x) {
   sum(abs(x - mean(x))) / length(x)
 }
 
-odchyleniePrzecietneRoz <- function(x) {
+odchyleniePrzecietneRozSr <- function(x) {
   sum(abs(x$mids - SredniaRoz(x))*x$counts) / sum(x$counts)
 }
 
-wydajnosc1.odchylenie_przecietne_szczegolowy <- odchyleniePrzecietne(wydajnosc1_szereg_szczegolowy)
-wydajnosc2.odchylenie_przecietne_szczegolowy <- odchyleniePrzecietne(wydajnosc2_szereg_szczegolowy)
-wydajnosc1.odchylenie_przecietne_rozdzielczy <- odchyleniePrzecietneRoz(wydajnosc1_szereg_rozdzielczy)
-wydajnosc2.odchylenie_przecietne_rozdzielczy <- odchyleniePrzecietneRoz(wydajnosc2_szereg_rozdzielczy)
+wydajnosc1.odchylenie_przecietne_srednia_szczegolowy <- odchyleniePrzecietneSr(wydajnosc1_szereg_szczegolowy)
+wydajnosc2.odchylenie_przecietne_srednia_szczegolowy <- odchyleniePrzecietneSr(wydajnosc2_szereg_szczegolowy)
+wydajnosc1.odchylenie_przecietne_srednia_rozdzielczy <- odchyleniePrzecietneRozSr(wydajnosc1_szereg_rozdzielczy)
+wydajnosc2.odchylenie_przecietne_srednia_rozdzielczy <- odchyleniePrzecietneRozSr(wydajnosc2_szereg_rozdzielczy)
+
+# odchylenie przecietne od mediany
+odchyleniePrzecietneMe <- function(x) {
+  sum(abs(x - mean(x))) / length(x)
+}
+
+odchyleniePrzecietneRozMe <- function(x) {
+  sum(abs(x$mids - Mediana(x))*x$counts) / sum(x$counts)
+}
+
+wydajnosc1.odchylenie_przecietne_mediana_szczegolowy <- odchyleniePrzecietneMe(wydajnosc1_szereg_szczegolowy)
+wydajnosc2.odchylenie_przecietne_mediana_szczegolowy <- odchyleniePrzecietneMe(wydajnosc2_szereg_szczegolowy)
+wydajnosc1.odchylenie_przecietne_mediana_rozdzielczy <- odchyleniePrzecietneRozMe(wydajnosc1_szereg_rozdzielczy)
+wydajnosc2.odchylenie_przecietne_mediana_rozdzielczy <- odchyleniePrzecietneRozMe(wydajnosc2_szereg_rozdzielczy)
 
 #zad 2 test Kołmogorowa lilieforsa
 lilliefors <- function (x) 
@@ -347,7 +364,7 @@ test_zad_5 <- function(wydajnosc1, wydajnosc2)
   if(roznicaSrednich <= roznicaWariancji)
   {
     WartoscStatystykiTestowej <- WartoscStatystykiTestowej/(sqrt(((odchylenie_std_wydajnosci(wydajnosc1)*odchylenie_std_wydajnosci(wydajnosc1))/length(wydajnosc1))
-                                +((odchylenie_std_wydajnosci(wydajnosc2)*odchylenie_std_wydajnosci(wydajnosc2))/length(wydajnosc2)))) 
+                                                                 +((odchylenie_std_wydajnosci(wydajnosc2)*odchylenie_std_wydajnosci(wydajnosc2))/length(wydajnosc2)))) 
   }
   else
   {
