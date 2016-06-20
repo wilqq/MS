@@ -113,6 +113,7 @@ wariancjaRoz <- function(x) {
   return (sum((x$mids-(SredniaRoz(x)))^2*x$counts,na.rm=TRUE)/sum(x$counts))
 }
 
+
 wydajnosc1.wariancja_szczegolowy <- var(wydajnosc1_szereg_szczegolowy)
 wydajnosc2.wariancja_szczegolowy <- var(wydajnosc2_szereg_szczegolowy)
 wydajnosc1.wariancja_rozdzielczy <- wariancjaRoz(wydajnosc1_szereg_rozdzielczy)
@@ -123,10 +124,56 @@ odchylenieRoz <- function(x) {
   return (sqrt(sum((x$mids-(SredniaRoz(x)))^2*x$counts,na.rm=TRUE)/sum(x$counts)))
 }
 
-wydajnosc1.odchylenie_std_szczegolowy <- sd(wydajnosc1_szereg_szczegolowy)
-wydajnosc2.odchylenie_std_szczegolowy <- sd(wydajnosc2_szereg_szczegolowy)
-wydajnosc1.odchylenie_std_rozdzielczy <- odchylenieRoz(wydajnosc1_szereg_rozdzielczy)
-wydajnosc2.odchylenie_std_rozdzielczy <- odchylenieRoz(wydajnosc2_szereg_rozdzielczy)
+varBiasedRoz <- function(x) { #estymator obciazony wariancji rozdzielczego
+  sum((x$mids - SredniaRoz(x))^2 * x$counts) / sum(x$counts);
+  #mianownik rowny liczbie pomiarow n
+}
+
+varUnbiasedRoz <- function(x) { #estymator nieobciazony wariancji rozdzielczego
+  sum((x$mids - SredniaRoz(x))^2 * x$counts) / (sum(x$counts) - 1);
+  #mianownik rowny liczbie pomiarow n - 1
+}
+
+varBiasedSz <- function(x) { #estymator obciazony wariancji szczegolowego
+  sum((x - mean(x))^ 2) / length(x); 
+  #mianownik rowny liczbie pomiarow n
+}
+
+varUnbiasedSz <- function(x) { #estymator nieobciazony wariancji szczegolowego
+  sum((x - mean(x))^ 2) / (length(x) - 1); 
+  #mianownik rowny liczbie pomiarow n - 1
+}
+
+#odchylenie standardowe obciazone szczegolowy
+sdBiasedSz <- function (x) { 
+  sqrt(varBiasedSz(x));
+}
+
+#odchylenie standardowe nieobciazone szczegolowy
+sdUnbiasedSz <- function (x) { 
+  sqrt(varUnbiasedSz(x));
+}
+
+#odchylenie standardowe obciazone rozdzielczy
+sdBiasedRoz <- function (x) { 
+  sqrt(varBiasedRoz(x));
+}
+
+#odchylenie standardowe nieobciazone rozdzielczy
+sdUnbiasedRoz <- function (x) { 
+  sqrt(varUnbiasedRoz(x));
+}
+
+wydajnosc1.odchylenie_std_szczegolowy_obc <- sdBiasedSz(wydajnosc1_szereg_szczegolowy)
+wydajnosc2.odchylenie_std_szczegolowy_obc <- sdBiasedSz(wydajnosc2_szereg_szczegolowy)
+wydajnosc1.odchylenie_std_rozdzielczy_obc <- sdBiasedRoz(wydajnosc1_szereg_rozdzielczy)
+wydajnosc2.odchylenie_std_rozdzielczy_obc <- sdBiasedRoz(wydajnosc2_szereg_rozdzielczy)
+
+
+wydajnosc1.odchylenie_std_szczegolowy_nieobc <- sdUnbiasedSz(wydajnosc1_szereg_szczegolowy)
+wydajnosc2.odchylenie_std_szczegolowy_nieobc  <- sdUnbiasedSz(wydajnosc2_szereg_szczegolowy)
+wydajnosc1.odchylenie_std_rozdzielczy_nieobc  <- sdUnbiasedRoz(wydajnosc1_szereg_rozdzielczy)
+wydajnosc2.odchylenie_std_rozdzielczy_nieobc  <- sdUnbiasedRoz(wydajnosc2_szereg_rozdzielczy)
 
 #wspolczynnik zmiennosci
 wZm <- function(x) {
